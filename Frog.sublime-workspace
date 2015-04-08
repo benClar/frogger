@@ -1,0 +1,290 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ja",
+				"javaClass	Java Class Template that integrates my testing framework"
+			],
+			[
+				"ar",
+				"articleID"
+			],
+			[
+				"arti",
+				"article"
+			],
+			[
+				"art",
+				"article"
+			],
+			[
+				"a",
+				"articleID"
+			],
+			[
+				"article",
+				"articleID"
+			],
+			[
+				"sq",
+				"sqlQ"
+			],
+			[
+				"sql",
+				"sqlQuery"
+			],
+			[
+				"artic",
+				"articleID"
+			],
+			[
+				"acc",
+				"accountID"
+			],
+			[
+				"data",
+				"data_file"
+			],
+			[
+				"sess",
+				"sessionID"
+			],
+			[
+				"tim",
+				"time_format"
+			],
+			[
+				"get_",
+				"get_password"
+			],
+			[
+				"account",
+				"accountRole"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "Packages/Python/Python.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"pack con",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/benjaminclarke/Java/frogger/Frogger.java",
+		"/Users/benjaminclarke/Java/frogger/frog.java",
+		"/Users/benjaminclarke/Library/Application Support/Sublime Text 3/Packages/User/JavaMainClassWithTesting.sublime-snippet",
+		"/Users/benjaminclarke/Library/Application Support/Sublime Text 3/Packages/User/JavaSubClassWithTesting.sublime-snippet",
+		"/Users/benjaminclarke/Sites/webTech/do/getArticles.js",
+		"/Users/benjaminclarke/Sites/webTech/Blank.html",
+		"/Users/benjaminclarke/Sites/webTech/server.js",
+		"/Users/benjaminclarke/Sites/webTech/untitled",
+		"/Users/benjaminclarke/Sites/webTech/scripts.js",
+		"/Users/benjaminclarke/Sites/webTech/FrontPageArticleStyle.css",
+		"/Users/benjaminclarke/Sites/webTech/db/createHistoryDB.sql",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment2/queries.sql",
+		"/Users/benjaminclarke/Sites/webTech/newArticle.html",
+		"/Users/benjaminclarke/Sites/webTech/frontPageScripts.js",
+		"/Users/benjaminclarke/Sites/webTech/ajax.js",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/createFridge.sql",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/login.py",
+		"/Users/benjaminclarke/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/benjaminclarke/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/benjaminclarke/Library/Application Support/Sublime Text 3/Packages/Default/Default (OSX).sublime-keymap",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/accountManagement.py",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/api.py",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/database.py",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/reader.py",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/session.py",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/login.json",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/logout.json",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/new_user.json",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/show_all.json",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/remove_item.json",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/remove_user.json",
+		"/Users/benjaminclarke/GoogleDrive/Documents/Bristol/UOB/Databases/Assignment3/database/add_item.json",
+		"/Users/benjaminclarke/Library/Application Support/Sublime Text 3/Packages/User/Default (OSX).sublime-keymap"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"#CLASSNAME#",
+			">",
+			"				\n",
+			"print",
+			"'"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"Frog",
+			"Frogger",
+			"\""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 100.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "Frog.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 151.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
