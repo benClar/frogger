@@ -1,3 +1,6 @@
 public enum GameObjectType	{
-	FROG();
+	FROG(),
+	GROUND(),
+	CAR(),
+	BLOOD();
 }

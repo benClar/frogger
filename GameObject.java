@@ -1,6 +1,6 @@
-public interface GameObject	{
+public interface GameObject {
 
-	Movement move();
+	Movement move(Direction d, Movement moveCalculator);
 	GameObjectType getGameObjectType();
-
+	Direction getDirection();
 }

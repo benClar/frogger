@@ -1,5 +1,7 @@
 import com.bclarke.testing.*;
 import com.bclarke.general.*;
+import java.util.concurrent.*;
+import java.util.*;
 
 public class Creator  {
 
@@ -7,11 +9,22 @@ public class Creator  {
 
 	private final int WORLD_WIDTH = 9;
 	private final int WORLD_HEIGHT = 8;
-	private final int FROG_INIT_ROW = WORLD_HEIGHT;
+	private final int FROG_INIT_ROW = WORLD_HEIGHT - 1;
 	private final int FROG_INIT_COLUMN = WORLD_WIDTH/2;
+	private final int CELL_WIDTH = 30;
+	private final int CELL_HEIGHT = 30;
 
-	public void createWorld()	{
-		world = new World(new Frog(), WORLD_WIDTH, WORLD_HEIGHT,FROG_INIT_ROW, FROG_INIT_COLUMN);
+	public World createWorld(ConcurrentLinkedQueue<Direction> moveQueue,Queue<CreateInstruction> createQueue)	{
+		world = new World(new Frog(FROG_INIT_ROW, FROG_INIT_COLUMN), WORLD_HEIGHT, WORLD_WIDTH, CELL_WIDTH,CELL_HEIGHT,moveQueue,createQueue);
+		return world;
+	}
+
+	public ObjectGenerator createObjectGenerator(Queue<CreateInstruction> createQueue)	{
+		return new ObjectGenerator(WORLD_HEIGHT,createQueue);
+	}
+
+	public World getWorld()	{
+		return world;
 	}
 
 /*----------Testing----------*/
