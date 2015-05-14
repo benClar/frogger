@@ -35,6 +35,22 @@ public class Cell {
 		return gameCell.get(index).getGameObjectType();
 	}
 
+	public int getGameObjectIndex(GameObjectType go)	{
+		int i = 0;
+		for (GameObject g: gameCell)	{
+			if(g.getGameObjectType() == go)	{
+				return i;
+			}
+			i++;
+		}
+		try	{
+			throw new Exception();
+		} catch (Exception e)	{
+			WhiteBoxTesting.catchFatalException(e,"Object type does not exits in this cell");
+			return 0;
+		}
+	}
+
 	public GameObject getGameObject(int index)	{
 		return gameCell.get(index);
 	}

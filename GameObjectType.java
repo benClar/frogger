@@ -2,5 +2,8 @@ public enum GameObjectType	{
 	FROG(),
 	GROUND(),
 	CAR(),
-	BLOOD();
+	BLOOD(),
+	ROAD(),
+	WATER(),
+	LOG();
 }

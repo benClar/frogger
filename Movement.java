@@ -49,12 +49,12 @@ public class Movement  {
 	}
 
 	public void moveNorth(int n)	{
-		setRowMovement(-n);
+		setRowMovement(+n);
 		setColumnMovement(NO_MOVE);
 	}
 
 	public void moveSouth(int n)	{
-		setRowMovement(n);
+		setRowMovement(-n);
 		setColumnMovement(NO_MOVE);
 	}
 
@@ -87,10 +87,10 @@ public class Movement  {
 		Movement m = new Movement(0,0);
 		t.enterSuite("Movement Unit Tests");
 		m.moveNorth(10);
-		t.compare(-10,"==",m.getRowMovement(),"Row Movement is -10 to move North");
+		t.compare(10,"==",m.getRowMovement(),"Row Movement is 10 to move North");
 		t.compare(0,"==",m.getColumnMovement(),"Column Movement is 0 to move North");
 		m.moveSouth(10);
-		t.compare(10,"==",m.getRowMovement(),"Row Movement is 10 to move South");
+		t.compare(-10,"==",m.getRowMovement(),"Row Movement is -10 to move South");
 		t.compare(0,"==",m.getColumnMovement(),"Column Movement is 0 to move South");
 		m.moveEast(10);
 		t.compare(0,"==",m.getRowMovement(),"Row Movement is 0 to move East");

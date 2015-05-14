@@ -8,18 +8,24 @@ public class CreateInstruction {
 	private Direction direction;
 	private Timer action;
 	private double objectMovementInterval;
+	private int col;
 
 
-	public CreateInstruction(GameObjectType t, double cInt, double obInterval, Direction d,int r)	{
+	public CreateInstruction(GameObjectType t, double cInt, double obInterval, Direction d,int r, int c)	{
 		action = new Timer(cInt);
 		type = t;
 		objectMovementInterval = obInterval;
 		direction = d;
 		row = r;
+		col = c;
 	}
 
 	public GameObjectType getType()	{
 		return type;
+	}
+
+	public int getStartingColumn()	{
+		return col;
 	}
 
 	public Boolean ready()	{

@@ -1,5 +1,6 @@
 import com.bclarke.testing.*;
 import com.bclarke.general.*;
+import java.util.Random;
 
 public class Timer  {
 
@@ -9,6 +10,11 @@ public class Timer  {
 	public Timer(double i)	{
 		setInterval(i);
 		lastAction = 0;
+	}
+
+	public Timer()	{
+		lastAction = 0;
+		interval = 0;
 	}
 
 	private long convert(double i)	{
@@ -21,12 +27,21 @@ public class Timer  {
 		}
 	}
 
+	public static Double generateInterval(double lowerBound, double upperBound)	{
+		Random r = new Random();
+		return lowerBound + (upperBound  - lowerBound) * r.nextDouble();
+	}
+
 	public boolean ready()	{
 		if(getCurrentTime() - getLastAction() >= interval)	{
 			logAction();
 			return true;
 		}
 		return false;
+	}
+
+	public void makeReady()	{
+		lastAction = 0;
 	}
 
 	public void setInterval(double i)	{

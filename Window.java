@@ -11,15 +11,17 @@ public class Window implements Runnable {
 	private GameObject gameObj;
 	private int task;
 	private Display drawing;
-	Cell[][] board;
+	private Board board;
 	private ConcurrentLinkedQueue<Direction> queue;
+	private FrogView frogView;
 
 	private final int START = 0;
 	private final int UPDATE = 1;
 
-	public Window(ConcurrentLinkedQueue<Direction> q)	{
+	public Window(ConcurrentLinkedQueue<Direction> q, FrogView view)	{
 		task = START;
 		queue = q;
+		frogView = view;
 		try	{
 			SwingUtilities.invokeAndWait(this);
     	} catch (Exception err)	{
@@ -39,14 +41,11 @@ public class Window implements Runnable {
     	return drawing;
     }
 
-    public void update(Cell[][] b)	{
-    	// row = r;
-    	// column = c;
-    	// gameObj = gO;
+    public void update(Board b)	{
     	board = b;
     	task = UPDATE;
     	try	{
-    		SwingUtilities.invokeLater(this);
+    		SwingUtilities.invokeAndWait(this);
     	} catch (Exception err)	{
     		throw new Error(err);
     	}
@@ -60,7 +59,7 @@ public class Window implements Runnable {
 	public void start()	{
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		drawing = new Display(queue);
+		drawing = new Display(queue,frogView);
 		window.add(drawing);
 		window.pack();
 		window.setLocationByPlatform(true);

@@ -23,15 +23,11 @@ public class Frogger {
 	public void run()  {
 		moveQueue = new ConcurrentLinkedQueue<Direction>();
 		createQueue = new LinkedList<CreateInstruction>();
-		Creator c = new Creator();
-		World w = c.createWorld(moveQueue,createQueue);
-		ObjectGenerator og = c.createObjectGenerator(createQueue);
+		World w = new World(moveQueue,createQueue);
+		// ObjectGenerator og = new ObjectGenerator(createQueue);
 		while(true)	{
+            w.tick();
             w.moveFrog(get());
-            og.generate();
-            w.checkForInstructions();
-            w.checkFrog();
-            w.moveWorld();
 		}
     }
 
@@ -61,12 +57,13 @@ public class Frogger {
 		Frogger.unitTest(t);
 		Frog.unitTest(t);
 		Movement.unitTest(t);
-		World.unitTest(t);
 		Display.componentTest_frogMove(t);
 		Cell.unitTest(t);
 		Car.unitTest(t);
 		ObjectGenerator.unitTest(t);
 		Timer.unitTest(t);
+		Board.unitTest(t);
+		World.unitTest(t);
 		return t;
 	}
 

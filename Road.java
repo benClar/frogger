@@ -1,33 +1,37 @@
 import com.bclarke.testing.*;
 import com.bclarke.general.*;
 
-public class BloodSplatter implements GameObject {
+public class Road implements GameObject  {
 
-	private final int GROUND_BASE_SPEED = 0;
-	private final GameObjectType type = GameObjectType.BLOOD;
-
-	public Movement move(Direction d, Movement bloodMovement)	{
-		bloodMovement.dontMove();
-		return bloodMovement;
-	}
-
-	public double getMoveInterval()	{
-		return 0;
-	}
-
-	public void makeReady()	{
-		
+	private final int ROAD_BASE_SPEED = 0;
+	private final GameObjectType type = GameObjectType.ROAD;
+	private final boolean inheritable = false;
+	public Movement move(Direction d, Movement roadMovement)	{
+		roadMovement.dontMove();
+		return roadMovement;
 	}
 
 	public GameObjectType getGameObjectType()	{
 		return type;
 	}
 
-	public void addToSpeed(int s)	{
+	public double getMoveInterval()	{
+		return 0;
+	}
+
+	public Direction getDirection()	{
+		return Direction.NORTH;
+	}
+
+	public int inheritSpeed()	{
+		return 0;
+	}
+
+	public void makeReady()	{
 
 	}
 
-	public void removeInheritanceSpeed()	{
+	public void addToSpeed(int s)	{
 
 	}
 
@@ -39,12 +43,12 @@ public class BloodSplatter implements GameObject {
 		return false;
 	}
 
-	public Direction getDirection()	{
-		return Direction.NORTH;
+	public void removeInheritanceSpeed()	{
+
 	}
 
-	public int inheritSpeed()	{
-		return 0;
+	public boolean inheritable()	{
+		return inheritable;
 	}
 
 	public Direction inheritDirection()	{
@@ -52,7 +56,7 @@ public class BloodSplatter implements GameObject {
 	}
 
 	public void setInheritanceStatus(boolean b)	{
-
+		
 	}
 
 	public boolean inheriting()	{
@@ -63,24 +67,18 @@ public class BloodSplatter implements GameObject {
 
 	}
 
-	public boolean inheritable()	{
-		return false;
-	}
-
 /*----------Testing----------*/
-
-
 
 	public static void main( String[] args )    {
 	 
 		if(WhiteBoxTesting.checkMode(args).equals(OperatingMode.UNIT_TEST)) {
-			BloodSplatter.unitTest(new Testing()).endTesting();
+			Road.unitTest(new Testing()).endTesting();
 		} 
 	}
 
 	public static Testing unitTest(Testing t)	{
 		WhiteBoxTesting.startTesting();
-		t.enterSuite("BloodSplatter Unit Tests");
+		t.enterSuite("Road Unit Tests");
 		/*Unit Tests Here*/
 		t.exitSuite();
 		return t;
