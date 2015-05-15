@@ -30,7 +30,6 @@ public class Ground implements GameObject {
 	}
 
 	public void makeReady()	{
-
 	}
 
 	public boolean justBeenMoved()	{

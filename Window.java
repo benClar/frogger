@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.concurrent.*;
+import javax.swing.border.*;
 
 public class Window implements Runnable {
 
@@ -56,11 +57,42 @@ public class Window implements Runnable {
     	drawing.update(board);
     }
 
+    public JPanel display()	{
+    	JPanel allBox = new JPanel();
+    	Box userBox = Box.createVerticalBox();
+    	Box gameBox = Box.createVerticalBox();
+    	GridLayout grid = new GridLayout(1, 2);
+    	JLabel scoreLabel = new JLabel("Current Score: ");
+    	JLabel deathLabel = new JLabel("Number of deaths: ");
+    	drawing = new Display(queue,frogView);
+    	gameBox.add(drawing);
+    	userBox.add(scoreLabel);
+    	userBox.add(deathLabel);
+    	buttons(userBox);
+    	allBox.setLayout(grid);
+    	allBox.add(gameBox);
+    	allBox.add(userBox);
+    	return allBox;
+    }
+
+    public Box buttons(Box b)	{
+    	JButton resetButton = new JButton("Reset");
+    	resetButton.addActionListener(new ActionListener()	{
+	        public void actionPerformed(ActionEvent e) {
+	            System.out.println("RESET");
+	        }
+    	});
+    	b.add(resetButton);
+
+    	return b;
+    }
+
 	public void start()	{
 		JFrame window = new JFrame();
+		
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		drawing = new Display(queue,frogView);
-		window.add(drawing);
+		window.setTitle("Frogger");
+		window.add(display());
 		window.pack();
 		window.setLocationByPlatform(true);
 		window.setVisible(true);

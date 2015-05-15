@@ -3,11 +3,23 @@ import com.bclarke.general.*;
 
 public class BloodSplatter implements GameObject {
 
-	private final int GROUND_BASE_SPEED = 0;
+	private int speed;
+	private boolean justBeenMoved;
+	private Direction direction;
+	private boolean readiness;
+	private final int WATER_BASE_SPEED = 0;
 	private final GameObjectType type = GameObjectType.BLOOD;
 
+	public BloodSplatter()	{
+		justBeenMoved = false;
+		readiness = false;
+		speed = WATER_BASE_SPEED;
+		direction = Direction.NONE;
+
+	}
+
 	public Movement move(Direction d, Movement bloodMovement)	{
-		bloodMovement.dontMove();
+		bloodMovement.getMove(d,speed);
 		return bloodMovement;
 	}
 
@@ -16,7 +28,7 @@ public class BloodSplatter implements GameObject {
 	}
 
 	public void makeReady()	{
-		
+		readiness = true;
 	}
 
 	public GameObjectType getGameObjectType()	{
@@ -24,19 +36,32 @@ public class BloodSplatter implements GameObject {
 	}
 
 	public void addToSpeed(int s)	{
-
+		speed += s;
 	}
 
 	public void removeInheritanceSpeed()	{
-
+		speed = WATER_BASE_SPEED;
 	}
 
 	public boolean justBeenMoved()	{
-		return true;
+		boolean move;
+		if(justBeenMoved == false)	{
+			// System.out.println("LOG HAVE NOT JUST BEEN MOVED");
+			move = justBeenMoved;
+			justBeenMoved = true;
+			return move;
+		} else {
+			// System.out.println("LOG HAVE JUST BEEN MOVED");
+			move = justBeenMoved;
+			justBeenMoved = false;
+			return move;
+		}
 	}
 
 	public boolean ready()	{
-		return false;
+		boolean readinessTemp = readiness;
+		readiness = false;
+		return readinessTemp;
 	}
 
 	public Direction getDirection()	{
@@ -44,11 +69,11 @@ public class BloodSplatter implements GameObject {
 	}
 
 	public int inheritSpeed()	{
-		return 0;
+		return speed;
 	}
 
 	public Direction inheritDirection()	{
-		return Direction.NONE;
+		return direction;
 	}
 
 	public void setInheritanceStatus(boolean b)	{
@@ -60,11 +85,11 @@ public class BloodSplatter implements GameObject {
 	}
 
 	public void setDirection(Direction d)	{
-
+		direction =d;
 	}
 
 	public boolean inheritable()	{
-		return false;
+		return true;
 	}
 
 /*----------Testing----------*/

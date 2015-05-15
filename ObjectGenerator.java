@@ -132,7 +132,9 @@ public class ObjectGenerator  {
 		int rndm = randomGenerator.nextInt(UPPER_BOUND);
 		CreateInstruction c;
 		Direction d = generateRandomDirection();
-		if(rndm <= WATER_BOUNDARY)	{
+		if(r == 0)	{
+			c = new CreateInstruction(GameObjectType.GROUND,0,0,generateRandomDirection(),r,getStartingColumn(d));
+		} else if(rndm <= WATER_BOUNDARY)	{
 			c = new CreateInstruction(GameObjectType.WATER, 0, 0, generateToggleDirection(), r, getStartingColumn(d));
 			// paveRow(GameObjectType.WATER,0,0,d,r);
 		} else if(rndm <= CAR_BOUNDARY)	{

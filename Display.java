@@ -8,7 +8,7 @@ import java.net.*;
 import java.util.*;
 
 
-public class Display extends JPanel implements MouseListener, KeyListener{
+public class Display extends JPanel implements MouseListener{
 
 	private Board board;
 	private Image frogImage;
@@ -35,12 +35,22 @@ public class Display extends JPanel implements MouseListener, KeyListener{
 		queue = q;
 		setPreferredSize(new Dimension(500,500));
 		setBackground(Color.WHITE);
-		// addMouseListener(this);
-		addKeyListener(this);
-		this.setFocusable(true);
 		initImages();
 		frogView = view;
+		keyBindings();
 	}
+
+	private void keyBindings()	{
+		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"),"downKey");
+		this.getActionMap().put("downKey",new keyAction("DOWN",queue));		
+		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"),"upKey");
+		this.getActionMap().put("upKey",new keyAction("UP",queue));	
+		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"),"leftKey");
+		this.getActionMap().put("leftKey",new keyAction("LEFT",queue));	
+		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"),"rightKey");
+		this.getActionMap().put("rightKey",new keyAction("RIGHT",queue));	
+	}
+
 
 
 	private void initImages()	{
@@ -148,32 +158,13 @@ public class Display extends JPanel implements MouseListener, KeyListener{
 	        // queue.add(e.getY() / 100);
 	}
     
+
+
     public void mousePressed(MouseEvent e) {}
     public void mouseClicked(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
 
-    public void keyTyped(KeyEvent e){
-    }
-    public void keyPressed(KeyEvent e) {
-    	switch(e.getExtendedKeyCode())	{
-    		case KEY_UP:
-    			queue.add(Direction.NORTH);
-    			break;
-    		case KEY_DOWN:
-    			queue.add(Direction.SOUTH);
-    			break;
-    		case KEY_LEFT:
-    			queue.add(Direction.EAST);
-    			break;
-    		case KEY_RIGHT:
-    			queue.add(Direction.WEST);
-    			break;
-    		default:
-    			break;
-    	}
-    }
-    public void keyReleased(KeyEvent e) {}
 
 /*----------Testing----------*/
 
