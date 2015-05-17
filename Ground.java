@@ -17,6 +17,10 @@ public class Ground implements GameObject {
 		return type;
 	}
 
+	public void setLastMoved(boolean f)	{
+
+	}
+
 	public void setDirection(Direction d)	{
 
 	}

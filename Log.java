@@ -41,12 +41,10 @@ public class Log implements GameObject {
 	public boolean justBeenMoved()	{
 		boolean move;
 		if(justBeenMoved == false)	{
-			// System.out.println("LOG HAVE NOT JUST BEEN MOVED");
 			move = justBeenMoved;
 			justBeenMoved = true;
 			return move;
 		} else {
-			// System.out.println("LOG HAVE JUST BEEN MOVED");
 			move = justBeenMoved;
 			justBeenMoved = false;
 			return move;
@@ -67,6 +65,10 @@ public class Log implements GameObject {
 
 	public void addToSpeed(int s)	{
 		speed += s;
+	}
+
+	public void setLastMoved(boolean f)	{
+		justBeenMoved = f;
 	}
 
 	public Direction inheritDirection()	{

@@ -27,6 +27,11 @@ public class Road implements GameObject  {
 		return 0;
 	}
 
+	public void setLastMoved(boolean f)	{
+
+	}
+
+
 	public void makeReady()	{
 
 	}

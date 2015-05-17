@@ -14,7 +14,9 @@ public class World  {
 	private Queue<CreateInstruction> createQueue;
 	private ObjectGenerator objectGen;
 	private FrogView view;
-
+	private Timer resetTimer;
+	private Sound sound;
+	private int furthestRow;
 	private final int WORLD_WIDTH = 9;
 	private final int WORLD_HEIGHT = 8;
 	private final int FROG_INIT_ROW = 0;
@@ -23,17 +25,19 @@ public class World  {
 	private final int CELL_HEIGHT = 30;
 
 
-	public World(ConcurrentLinkedQueue<Direction> queue, Queue<CreateInstruction> cQueue)	{
+	public World(ConcurrentLinkedQueue<UserCommand> queue, Queue<CreateInstruction> cQueue)	{
 		board = new Board(WORLD_HEIGHT,WORLD_WIDTH);
 		view = new FrogView(WORLD_HEIGHT);
 		window = new Window(queue,view);
-		// System.out.println("COL " +FROG_INIT_COLUMN );
+		resetTimer = new Timer(1.0);
 
 		frogger = new Frog(FROG_INIT_ROW, FROG_INIT_COLUMN);
 		createQueue = cQueue;
 		moveCalculator = new Movement(0,0);
 		addToWorld(frogger.getRow(), frogger.getCol(), frogger);
 		objectGen = new ObjectGenerator(view,cQueue);
+		sound = new Sound();
+		furthestRow = 0;
 	}
 
 	public void tick()	{
@@ -41,6 +45,39 @@ public class World  {
             objectGen.generate();
             checkFrog();
             moveWorld();	
+	}
+
+	private void resetWorld()	{
+		board = new Board(WORLD_HEIGHT,WORLD_WIDTH);
+		view = new FrogView(WORLD_HEIGHT);
+		frogger = new Frog(FROG_INIT_ROW, FROG_INIT_COLUMN);
+		window.setView(view);
+		addToWorld(frogger.getRow(), frogger.getCol(), frogger);
+		objectGen = new ObjectGenerator(view,createQueue);
+	}
+
+	public void interpret(UserCommand cmd)	{
+		switch(cmd)	{
+			case MOVE_NORTH:
+				moveFrog(Direction.NORTH);
+				break;
+			case MOVE_SOUTH:
+				moveFrog(Direction.SOUTH);
+				break;
+			case MOVE_EAST:
+				moveFrog(Direction.EAST);
+				break;
+			case MOVE_WEST:
+				moveFrog(Direction.WEST);
+				break;
+			case RESET_WORLD:
+				if(resetTimer.ready())	{
+					resetWorld();
+				}
+				break;
+			default:
+				break;
+		}
 	}
 
 	public void checkForInstructions()	{
@@ -53,12 +90,12 @@ public class World  {
 
 	private void interpretCreateInstruction(CreateInstruction i)	{
 		try	{
+			int waterIndex;
 			switch(i.getType())	{
 				case CAR:
 					addToWorld(i.getRow(),i.getStartingColumn(),new Car(i.getDirection(),i.getMovementInterval()));
 					break;
 				case ROAD:
-					// System.out.println(i.getRow());
 					addToWorld(i.getRow(),i.getStartingColumn(),new Road());
 					break;
 				case WATER:
@@ -68,9 +105,25 @@ public class World  {
 					}
 					break;
 				case LOG:
-					int waterIndex = board.getCell(i.getRow(),0).getGameObjectIndex(GameObjectType.WATER);
+					waterIndex = board.getCell(i.getRow(),0).getGameObjectIndex(GameObjectType.WATER);
 					int logCol = ObjectGenerator.getStartingColumn(board.getCell(i.getRow(),0).getGameObject(waterIndex).getDirection());
 					addToWorld(i.getRow(),logCol,new Log(board.getCell(i.getRow(),0).getGameObject(waterIndex).getMoveInterval()));
+					break;
+				case COIN:
+					if(board.getCell(i.getRow(),i.getStartingColumn()).objectPresent(GameObjectType.WATER))	{
+						waterIndex = board.getCell(i.getRow(),i.getStartingColumn()).getGameObjectIndex(GameObjectType.WATER);
+						addToWorld(i.getRow(),i.getStartingColumn(),new Coin(50,board.getCell(i.getRow(),i.getStartingColumn()).getGameObject(waterIndex).getMoveInterval()));
+					}else {
+						addToWorld(i.getRow(),i.getStartingColumn(),new Coin(10));
+					}
+					break;
+				case HEART:
+					if(board.getCell(i.getRow(),i.getStartingColumn()).objectPresent(GameObjectType.WATER))	{
+						waterIndex = board.getCell(i.getRow(),i.getStartingColumn()).getGameObjectIndex(GameObjectType.WATER);
+						addToWorld(i.getRow(),i.getStartingColumn(),new Heart(board.getCell(i.getRow(),i.getStartingColumn()).getGameObject(waterIndex).getMoveInterval()));
+					} else {
+						addToWorld(i.getRow(),i.getStartingColumn(),new Heart());
+					}
 					break;
 				default:
 					throw new IllegalArgumentException();
@@ -80,18 +133,12 @@ public class World  {
 		}
 	}
 
-	private void paveWithSameObject(int row, GameObject g)	{
-
-	}
-
 	public void moveWorld()	{
 		int lower = view.getLowerView();
 		int upper =  view.getUpperView();
 		for(int row = lower; row < upper; row++)	{
 			for(int col = 0; col < board.getWidth(); col++)	{
-				// for(int z = 0; z < board.getCell(row,col).getCellHeight(); z++)	{
-					moveCell(row,col);
-				// }
+				moveCell(row,col);
 			}
 		}
 	}
@@ -104,89 +151,21 @@ public class World  {
 			try	{
 				above = board.getCell(row,col).getGameObject(z + 1);
 			} catch (IndexOutOfBoundsException e)	{
-
+				above = null;
 			}
-
-			// System.out.println(row + " " + col + " " + current.getGameObjectType() );
 			current.move(board.getCell(row,col).getGameObject(z).getDirection(),moveCalculator);
 			moveObjectPosition(row,col,z,moveCalculator);
-			if(current.getGameObjectType() == GameObjectType.FROG)	{
-				// System.out.println(row + " " + col + " " + board.getCell(row,col).getGameObject(z - 1).getGameObjectType() + " " + moveCalculator.getRowMovement() + " " + moveCalculator.getColumnMovement());
-			}
 			if(height > board.getCell(row,col).getCellHeight())	{
 				--height;
 				--z;
 			}
-			// System.out.println(current.inheritable());
-			if(current.inheritable())	{
-				if(above != null)	{
-					if(current.ready())	{
-						above.makeReady();
-						if(above.justBeenMoved() == false)	{
-							if(above.getGameObjectType() == GameObjectType.FROG)	{
-								// System.out.println(current.getGameObjectType() + "==>" + above.getGameObjectType());
-							}
-							inheritAttributes(current, above);
-						}
-					} else	{
-						// System.out.println(current.getGameObjectType() + " IS NOT READY");
-					}
-				} else {
-					// System.out.println("NO MORE OBJECTS ABOVE! "  + current.getGameObjectType());
-				}
-			} else	{
-				// System.out.println("NOT READY " + current.getGameObjectType()) ;
+			if(current.inheritable() && above != null && current.ready() && above.justBeenMoved() == false)	{
+				above.makeReady();
+				inheritAttributes(current, above);
 			}
 			current.removeInheritanceSpeed();
 			current.setInheritanceStatus(false);
 		}	
-	}
-
-	private void moveCell(int row, int col, int z)	{
-
-		try	{
-			System.out.println("HERE_1 " + board.getCell(row,col).getGameObject(z).getGameObjectType());
-			// if(board.getCell(row,col).getGameObject(z - 1).inheritable())	{
-			// 	inheritAttributes(board.getCell(row,col).getGameObject(z - 1), board.getCell(row,col).getGameObject(z));
-			// }
-
-			if(board.getCell(row,col).getGameObject(z).inheritable())	{
-				// System.out.println(board.getCell(row,col).getGameObject(z + 1).getGameObjectType());
-				if(board.getCell(row,col).getGameObject(z).ready())	{
-					if(board.getCell(row,col).getGameObject(z + 1).justBeenMoved() == false){
-						inheritAttributes(board.getCell(row,col).getGameObject(z), board.getCell(row,col).getGameObject(z + 1));
-						System.out.println("HERE_2 " + board.getCell(row,col).getGameObject(z).getGameObjectType());
-						board.getCell(row,col).getGameObject(z).move(board.getCell(row,col).getGameObject(z).getDirection(),moveCalculator);
-						board.getCell(row,col).getGameObject(z).removeInheritanceSpeed();
-						board.getCell(row,col).getGameObject(z).setInheritanceStatus(false);
-						System.out.println("HERE_3 " + board.getCell(row,col).getGameObject(z).getGameObjectType() + " " + board.getCell(row,col).getGameObject(z).getDirection() +  " " + moveCalculator.getRowMovement() + " " + moveCalculator.getColumnMovement());
-						moveObjectPosition(row,col,z,moveCalculator);
-
-						if(board.getCell(row,col).getGameObject(z).getGameObjectType() == GameObjectType.WATER)	{
-							moveCell(row,col,z + 1);
-						} else {
-							moveCell(row,col,z);
-						}
-					}
-				} else {
-					// System.out.println("NOT READY TO MOVE ABOVE");
-				}
-			} else	{
-				System.out.println("HERE_4 " + board.getCell(row,col).getGameObject(z).getGameObjectType());
-				board.getCell(row,col).getGameObject(z).move(board.getCell(row,col).getGameObject(z).getDirection(),moveCalculator);
-				System.out.println(board.getCell(row,col).getGameObject(z).getGameObjectType() + " " + board.getCell(row,col).getGameObject(z).getDirection() +  " " + moveCalculator.getRowMovement() + " " + moveCalculator.getColumnMovement() + " " +  " MOVE");
-				board.getCell(row,col).getGameObject(z).removeInheritanceSpeed();
-				board.getCell(row,col).getGameObject(z).setInheritanceStatus(false);
-				moveObjectPosition(row,col,z,moveCalculator);
-			}
-			
-
-			
-		} catch (IndexOutOfBoundsException e)	{
-			System.out.println(row + " " + col);
-			System.out.println("NOTHING ABOVE");
-			return;	
-		}
 	}
 
 	public Window getWindow()	{
@@ -197,6 +176,8 @@ public class World  {
 		board.addToWorld(row,col,newGameObj);
 		window.update(board);
 	}
+
+
 
 	public void inheritAttributes(GameObject parent, GameObject child)	{
 			child.addToSpeed(parent.inheritSpeed());
@@ -216,12 +197,34 @@ public class World  {
 				if(checkFrogDeath(board.getCell(frogger.getRow(),frogger.getCol())))	{
 					killFrog(frogRow,frogCol);
 				} else	{
+					checkForItems(frogRow,frogCol);
 					moveObjectPosition(frogRow,frogCol,getFrogZAxis(frogRow,frogCol),moveCalculator);
+					if(m == Direction.NORTH)	{
+						if(furthestRow < frogRow) {
+							window.update("score",1);
+							furthestRow++;
+						}
+					}
 				}
 			} else {
 				frogger.setRow((frogger.getRow() - moveCalculator.getRowMovement()));
 				frogger.setCol((frogger.getCol() - moveCalculator.getColumnMovement()));
 			}
+		}
+	}
+
+	public void checkForItems(int row, int col)	{
+		if(board.getCell(row,col).objectPresent(GameObjectType.COIN))	{
+			int coinIndex = board.getCell(row,col).getGameObjectIndex(GameObjectType.COIN);
+			Coin c = (Coin) board.getCell(row,col).removeGameObject(coinIndex);
+			window.update("score", c.getPoints());
+			sound.playClip("coin");
+		}else if(board.getCell(row,col).objectPresent(GameObjectType.HEART))	{
+			int heartIndex = board.getCell(row,col).getGameObjectIndex(GameObjectType.HEART);
+			board.getCell(row,col).removeGameObject(heartIndex);
+			frogger.setInvincibility(true);
+			sound.playClip("heart");
+			window.setIcon("heart",true);
 		}
 	}
 
@@ -233,11 +236,17 @@ public class World  {
 	}
 
 	public boolean checkFrogDeath(Cell c)	{
-		if(checkForObject(frogger.getRow(),frogger.getCol(),GameObjectType.CAR))	{
-			return true;
-		} else if (c.getGameObjectType(c.getCellHeight() - 1) == GameObjectType.WATER) {
-			return true;
-		} 
+		try{
+			if(checkForObject(frogger.getRow(),frogger.getCol(),GameObjectType.CAR))	{
+				return true;
+			} else if (c.getGameObjectType(c.getCellHeight() - 1) == GameObjectType.WATER) {
+				return true;
+			} else if(c.getGameObjectType(c.getCellHeight() - 2) == GameObjectType.WATER &&  c.getGameObjectType(c.getCellHeight() - 1) != GameObjectType.LOG)	{
+				return true;
+			}
+		} catch (ArrayIndexOutOfBoundsException e)	{
+			return false;
+		}
 
 		return false;
 	}
@@ -251,7 +260,6 @@ public class World  {
 			view.increaseView();
 		} else if(d == Direction.SOUTH)	{
 			view.decreaseView();
-			// board.removeTop();
 		}
 	}
 
@@ -261,24 +269,63 @@ public class World  {
 
 	public void checkFrog()	{
 		try	{
+			checkForItems(frogger.getRow(),frogger.getCol());
 			if(((checkForObject(frogger.getRow(),frogger.getCol(),GameObjectType.FROG))) && (checkForObject(frogger.getRow(),frogger.getCol(),GameObjectType.CAR)))	{
 			 	killFrog(frogger.getRow(),frogger.getCol());	
 		 	}
 		} catch (IndexOutOfBoundsException e){
-			spawnFrog();
+			adjustFrogPosition();
+			killFrog(frogger.getRow(),frogger.getCol());
 		}
 	}
 
+	private int adjustFrogPosition()	{
+		int correctCol;
+		if(frogger.getCol() >= WORLD_WIDTH)	{
+			correctCol = WORLD_WIDTH -1;
+		} else {
+			correctCol = 0;
+		}
+
+		frogger.setCol(correctCol);
+		addToWorld(frogger.getRow(),correctCol,frogger);
+		
+		return correctCol;
+	}
+
 	private void killFrog(int frogRow, int frogCol)	{
-		removeGameObject(frogRow,frogCol,getFrogZAxis(frogRow,frogCol));
-		addToWorld(frogRow,frogCol, new BloodSplatter());
-		spawnFrog();
+		if(frogger.getInvincibility())	{
+			moveToSafety(frogRow,frogCol);
+			frogger.setInvincibility(false);
+			window.setIcon("heart",false);
+		} else {
+			furthestRow = 0;
+			sound.playClip("death");
+			removeGameObject(frogRow,frogCol,getFrogZAxis(frogRow,frogCol));
+			if(!checkForObject(frogRow,frogCol,GameObjectType.BLOOD))	{
+				addToWorld(frogRow,frogCol, new BloodSplatter());
+			}
+			spawnFrog();
+			window.update("death",1);
+		}
+	}
+
+	private void moveToSafety(int frogRow, int frogCol)	{
+		int targetRow = board.findNearestType(GameObjectType.GROUND, frogRow, frogCol);
+		moveCalculator.getMove(Direction.SOUTH,frogRow - targetRow);
+		moveObjectPosition(frogRow, frogCol,board.getCell(frogRow,frogCol).getGameObjectIndex(GameObjectType.FROG),moveCalculator);
+		for(int i = frogRow; i > targetRow; i--)	{
+			expandFrogView(Direction.SOUTH);
+		}
+		frogger.setRow(targetRow);
+		frogger.setInvincibility(false);
 	}
 
 	private void spawnFrog()	{
 		frogger = new Frog(FROG_INIT_ROW, FROG_INIT_COLUMN);
 		addToWorld(frogger.getRow(),frogger.getCol(),frogger);	
-		view.resetView();		
+		view.resetView();	
+		window.setScore(0);	
 	}
 
 
@@ -353,7 +400,7 @@ public class World  {
 	public static Testing unitTest_worldMechanisms(Testing t)	{
 		WhiteBoxTesting.startTesting();
 		t.enterSuite("World Unit Tests: Testing World mechanisms");
-		ConcurrentLinkedQueue<Direction> worldQueue = new ConcurrentLinkedQueue<Direction>();
+		ConcurrentLinkedQueue<UserCommand> worldQueue = new ConcurrentLinkedQueue<UserCommand>();
 		World w = new World(worldQueue,new LinkedList<CreateInstruction>());	
 		t.compare(w.checkConfines(-1,0),"==",false,"out of bounds");
 		t.compare(w.checkConfines(0,-1),"==",false,"out of bounds");
@@ -370,7 +417,7 @@ public class World  {
 	public static Testing unitTest_inheriting(Testing t)	{
 		WhiteBoxTesting.startTesting();
 		t.enterSuite("World Unit Tests: Objects inheriting");
-		ConcurrentLinkedQueue<Direction> worldQueue = new ConcurrentLinkedQueue<Direction>();
+		ConcurrentLinkedQueue<UserCommand> worldQueue = new ConcurrentLinkedQueue<UserCommand>();
 		World w = new World(worldQueue,new LinkedList<CreateInstruction>());
 		double moveInterval = Timer.generateInterval(Water.getLowerBound(),Water.getUpperBound());
 		w.addToWorld(1,4,new Water(Direction.EAST,moveInterval));
@@ -381,9 +428,7 @@ public class World  {
 		t.compare(w.board.getCell(1,4).getGameObject(1).inheritable(),"==",true,"Water is inhertable");
 		t.compare(w.frogger.inheriting(),"==",false,"Frog not inheriting");
 		w.moveFrog(Direction.NORTH);
-		// t.compare(w.frogger.inheriting(),"==",true,"Frog inheriting");
 		t.compare(w.board.getCell(1,4).getGameObject(3).getGameObjectType(),"==",GameObjectType.FROG,"Frog In correct position");
-		// w.moveWorld();
 		w.moveCell(1,4);
 		w.moveCell(1,5);
 		t.compare(w.board.getCell(1,5).getGameObject(2).getGameObjectType(),"==",GameObjectType.LOG,"Log Carried by water to the east one");
@@ -394,42 +439,31 @@ public class World  {
 
 		}
 		w.moveCell(1,5);
-		// w.moveWorld();
 		t.compare(w.board.getCell(1,6).getGameObject(2).getGameObjectType(),"==",GameObjectType.LOG,"Log Carried by water to the east one");
 		t.compare(w.board.getCell(1,6).getGameObject(3).getGameObjectType(),"==",GameObjectType.FROG,"Frog Carried by water to the east one");
-		// System.out.println(w.frogger.getSpeed() + " " + w.frogger.getDirection());
-		// System.out.println("CELL HEIGHT "+ w.board.getCell(1,4).getCellHeight());
-		// w.moveCell(1,4,1);
-		// System.out.println(w.frogger.getSpeed() + " " + w.frogger.getDirection());
-		// System.out.println(" FROG " + w.frogger.getRow() + " " + w.frogger.getCol());
-		// System.out.println(w.board.getCell(1,5).getGameObject(1).getGameObjectType());
-		// w.moveCell(1,4,1);
-		// t.compare(w.board.getCell(1,5).getGameObject(1).ready(),"==",false,"Water not ready to move");
-		// w.moveCell(1,5,1);
-		// w.moveWorld();
-		// System.out.println(w.frogger.getRow() + " " + w.frogger.getCol());
-		// t.compare(w.board.getCell(1,5).getGameObject(3).getGameObjectType(),"==",GameObjectType.FROG,"Frog Hasn't moved");
-
-		// t.compare(w.board.getCell(1,5).getGameObject(1).ready(),"==",true,"Water now ready to move");
-		// w.moveWorld();
-		// w.moveCell(1,5,1);
-
-		// System.out.println(w.frogger.getSpeed() + " " + w.frogger.getDirection());
-
-		// w.moveWorld();
-		// w.moveCell(1,5,1);
-		// t.compare(w.board.getCell(1,6).getGameObject(1).getGameObjectType(),"==",GameObjectType.FROG,"Frog Carried by water to the east one");
-		// System.out.println(w.board.getCell(1,6).getGameObject(w.board.getCell(1,6).getCellHeight() -1).getGameObjectType());
-		// w.moveWorld();
-		// System.out.println(w.board.getCell(1,6).getGameObject(w.board.getCell(1,6).getCellHeight() -1).getGameObjectType());
-		// // w.frogger.inheriting
+		w.moveToSafety(w.frogger.getRow(),w.frogger.getCol());
+		t.compare(w.board.getCell(0,6).getGameObject(1).getGameObjectType(),"==",GameObjectType.FROG,"Frog moved back to safety");
+		w.addToWorld(2,6,new Water(Direction.NORTH,moveInterval));
+		w.addToWorld(2,6,new Log(moveInterval));
+		w.addToWorld(3,6,new Water(Direction.NORTH,moveInterval));
+		w.addToWorld(3,6,new Log(moveInterval));
+		w.addToWorld(4,6,new Water(Direction.NORTH,moveInterval));
+		w.addToWorld(4,6,new Log(moveInterval));
+		w.moveFrog(Direction.NORTH);
+		w.moveFrog(Direction.NORTH);
+		w.moveFrog(Direction.NORTH);
+		w.moveFrog(Direction.NORTH);
+		w.moveToSafety(w.frogger.getRow(),w.frogger.getCol());
+		t.compare(w.board.getCell(0,6).getGameObject(1).getGameObjectType(),"==",GameObjectType.FROG,"Frog moved back to safety");
+		w.moveFrog(Direction.NORTH);
+		t.compare(w.board.getCell(1,6).getGameObject(3).getGameObjectType(),"==",GameObjectType.FROG,"Frog Can be moved");
 		return t;
 	}
 
 	public static Testing unitTest_MovingObjects(Testing t)	{
 		WhiteBoxTesting.startTesting();
 		t.enterSuite("World Unit Tests: Moving Objects");
-		ConcurrentLinkedQueue<Direction> worldQueue = new ConcurrentLinkedQueue<Direction>();
+		ConcurrentLinkedQueue<UserCommand> worldQueue = new ConcurrentLinkedQueue<UserCommand>();
 		World w = new World(worldQueue,new LinkedList<CreateInstruction>());
 		t.compare(w.getFrogZAxis(w.getFrog().getRow(),w.getFrog().getCol()),"==",1,"Frog's zaxis is 1");
 		t.compare(w.board.getCell(0,4).getGameObjectType(1),"==",GameObjectType.FROG,"Frog is at correct place");

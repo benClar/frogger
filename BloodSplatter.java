@@ -19,12 +19,16 @@ public class BloodSplatter implements GameObject {
 	}
 
 	public Movement move(Direction d, Movement bloodMovement)	{
-		bloodMovement.getMove(d,speed);
+		bloodMovement.dontMove();
 		return bloodMovement;
 	}
 
 	public double getMoveInterval()	{
 		return 0;
+	}
+
+	public void setLastMoved(boolean f)	{
+		
 	}
 
 	public void makeReady()	{
@@ -46,12 +50,10 @@ public class BloodSplatter implements GameObject {
 	public boolean justBeenMoved()	{
 		boolean move;
 		if(justBeenMoved == false)	{
-			// System.out.println("LOG HAVE NOT JUST BEEN MOVED");
 			move = justBeenMoved;
 			justBeenMoved = true;
 			return move;
 		} else {
-			// System.out.println("LOG HAVE JUST BEEN MOVED");
 			move = justBeenMoved;
 			justBeenMoved = false;
 			return move;
@@ -65,7 +67,7 @@ public class BloodSplatter implements GameObject {
 	}
 
 	public Direction getDirection()	{
-		return Direction.NORTH;
+		return direction;
 	}
 
 	public int inheritSpeed()	{

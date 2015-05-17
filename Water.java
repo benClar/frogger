@@ -25,6 +25,10 @@ public class Water implements GameObject {
 
 	}
 
+	public void setLastMoved(boolean f)	{
+
+	}
+
 	public double getMoveInterval()	{
 		return moveInterval;
 	}

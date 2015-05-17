@@ -5,8 +5,8 @@ import java.util.concurrent.*;
 
 class keyAction extends AbstractAction {
 	private String action;
-	private ConcurrentLinkedQueue<Direction> queue;
-    public keyAction(String a,ConcurrentLinkedQueue<Direction> q) {
+	private ConcurrentLinkedQueue<UserCommand> queue;
+    public keyAction(String a,ConcurrentLinkedQueue<UserCommand> q) {
     	action = a;
     	queue = q;
     }
@@ -14,16 +14,16 @@ class keyAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         switch(action)	{
         	case "RIGHT":
-    			queue.add(Direction.EAST);
+    			queue.add(UserCommand.MOVE_EAST);
         		break;
         	case "UP":
-    			queue.add(Direction.NORTH);
+    			queue.add(UserCommand.MOVE_NORTH);
         		break;
         	case "DOWN":
-    			queue.add(Direction.SOUTH);
+    			queue.add(UserCommand.MOVE_SOUTH);
         		break;
         	case "LEFT":
-    			queue.add(Direction.WEST);
+    			queue.add(UserCommand.MOVE_WEST);
         		break;
         	default:
         		break;

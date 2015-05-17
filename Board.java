@@ -26,6 +26,21 @@ public class Board  {
 		}
 	}
 
+	public int findNearestType(GameObjectType g, int row, int col)	{
+		for(int i = row; i >= 0; i--)	{
+			// System.out.println("CHECKING FOR GROUND : " + i + "TYPE:" + getCell(i,col).getGameObjectType(getCell(i,col)));
+			if(getCell(i,col).getGameObjectType(getCell(i,col).getCellHeight() - 1) == g)	{
+				return i;
+			}
+		}
+		try{
+			throw new Exception("Ground not Found");
+		} catch (Exception e) {
+			WhiteBoxTesting.catchFatalException(e,"Couldnt find specified type");
+			return 0;
+		}
+	}
+
 	public void addRow()	{
 		board.add(new Cell[getWidth()]);
 		for(int c = 0; c < getWidth(); c++)	{
@@ -34,7 +49,11 @@ public class Board  {
 	}
 
 	public void addToWorld(int row, int col, GameObject newGameObj)	{ 	
+		try	{
 		getCell(row,col).addToCell(newGameObj);
+		} catch (ArrayIndexOutOfBoundsException e)	{
+			System.out.println(newGameObj + "Failed to add");
+		}
 	}
 
 	public Cell getCell(int r,int c)	{

@@ -7,7 +7,7 @@ public class FrogView  {
 	private int upperView;
 	private int relPosition;
 	private int initialUpper;
-	private Direction direction;
+
 
 	private final int VIEW_DISTANCE = 6;
 
@@ -31,10 +31,6 @@ public class FrogView  {
 
 	public int getViewDistance()	{
 		return VIEW_DISTANCE - 1;
-	}
-
-	public Direction getDirection()	{
-		return direction;
 	}
 
 	private void increaseRelativePosition()	{

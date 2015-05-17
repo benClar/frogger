@@ -34,6 +34,10 @@ public class Car implements GameObject  {
 
 	}
 
+	public void setLastMoved(boolean f)	{
+		
+	}
+
 	public double getMoveInterval()	{
 		return 0;
 	}

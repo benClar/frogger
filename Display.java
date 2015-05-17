@@ -8,6 +8,7 @@ import java.net.*;
 import java.util.*;
 
 
+
 public class Display extends JPanel implements MouseListener{
 
 	private Board board;
@@ -17,20 +18,22 @@ public class Display extends JPanel implements MouseListener{
 	private Image roadImage;
 	private Image waterImage;
 	private Image logImage;
+	private Image coinImage;
+	private Image heartImage;
 	private int displayLowerBound;
 	private int displayUpperBound;
 	private FrogView frogView;
 
 	private final int WORLD_WIDTH = 9;
 	private final int WORLD_HEIGHT = 8;
- 	private ConcurrentLinkedQueue<Direction> queue;
+ 	private ConcurrentLinkedQueue<UserCommand> queue;
 
  	private final int KEY_UP = 38;
  	private final int KEY_DOWN = 40;
  	private final int KEY_RIGHT = 37;
  	private final int KEY_LEFT = 39;
 
-	public Display(ConcurrentLinkedQueue<Direction> q, FrogView view)	{
+	public Display(ConcurrentLinkedQueue<UserCommand> q, FrogView view)	{
 		board = new Board(WORLD_WIDTH,WORLD_HEIGHT);
 		queue = q;
 		setPreferredSize(new Dimension(500,500));
@@ -49,6 +52,10 @@ public class Display extends JPanel implements MouseListener{
 		this.getActionMap().put("leftKey",new keyAction("LEFT",queue));	
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"),"rightKey");
 		this.getActionMap().put("rightKey",new keyAction("RIGHT",queue));	
+	}
+
+	public void setView(FrogView v)	{
+		frogView = v;
 	}
 
 
@@ -77,6 +84,15 @@ public class Display extends JPanel implements MouseListener{
         u = this.getClass().getResource("images/log.png");
         icon = new ImageIcon(u);
         logImage = icon.getImage();
+
+        u = this.getClass().getResource("images/coin.png");
+        icon = new ImageIcon(u);
+        coinImage = icon.getImage();
+
+        u = this.getClass().getResource("images/heart.png");
+        icon = new ImageIcon(u);
+        heartImage = icon.getImage();
+        
 	}
 
     void update(Board b) {
@@ -128,8 +144,27 @@ public class Display extends JPanel implements MouseListener{
         		} catch (NullPointerException e)	{
 
         		}
+        		paintTheRest(g,r,c,yPre);
             }
+
         }
+    }
+
+    private void paintTheRest(Graphics2D g, int r, int c, int yPre)	{
+    	int y = convertYAxis(yPre);
+    	for(int cellObj = 0; cellObj < board.getCell(r,c).getCellHeight(); cellObj++ )	{
+    		switch(board.getCell(r,c).getGameObjectType(cellObj))	{
+				case COIN:
+					displayImage(g,50*c,50*y,coinImage);
+					break;
+				case HEART:
+					displayImage(g,50*c,50*y,heartImage);
+					break;
+				default:
+
+					break;
+    		}
+    	}
     }
 
     private int convertYAxis(int y)	{
@@ -178,19 +213,19 @@ public class Display extends JPanel implements MouseListener{
 	public static Testing unitTest(Testing t)	{
 		WhiteBoxTesting.startTesting();
 		t.enterSuite("Display Unit Tests");
-		/*Unit Tests Here*/
+		Display.unitTest_frogMove(t);
 		t.exitSuite();
 		return t;
 	}
 
-	public static Testing componentTest_frogMove(Testing t)	{
+	public static Testing unitTest_frogMove(Testing t)	{
 		WhiteBoxTesting.startTesting();
-		t.enterSuite("Display Component Test: Move Frog");
-		ConcurrentLinkedQueue<Direction> worldQueue = new ConcurrentLinkedQueue<Direction>();
+		t.enterSuite("Display Unit Test: Move Frog");
+		ConcurrentLinkedQueue<UserCommand> worldQueue = new ConcurrentLinkedQueue<UserCommand>();
 		World w = new World(worldQueue,new LinkedList<CreateInstruction>());
-		w.getWindow().getDisplay().queue.add(Direction.NORTH);
+		w.getWindow().getDisplay().queue.add(UserCommand.MOVE_NORTH);
 		try	{
-			t.compare(Direction.NORTH,"==",worldQueue.remove(),"North direction added and taken from the queue");
+			t.compare(UserCommand.MOVE_NORTH,"==",worldQueue.remove(),"North direction added and taken from the queue");
 			w.moveFrog(Direction.NORTH);
 			
 

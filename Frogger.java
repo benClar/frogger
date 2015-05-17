@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Frogger {
 
-	private ConcurrentLinkedQueue<Direction> moveQueue;
+	private ConcurrentLinkedQueue<UserCommand> moveQueue;
 	private Queue<CreateInstruction> createQueue;
 
 	public static void main( String[] args )    {
@@ -21,21 +21,20 @@ public class Frogger {
 	}
 
 	public void run()  {
-		moveQueue = new ConcurrentLinkedQueue<Direction>();
+		moveQueue = new ConcurrentLinkedQueue<UserCommand>();
 		createQueue = new LinkedList<CreateInstruction>();
 		World w = new World(moveQueue,createQueue);
-		// ObjectGenerator og = new ObjectGenerator(createQueue);
 		while(true)	{
             w.tick();
-            w.moveFrog(get());
+            w.interpret(get());
 		}
     }
 
-    public Direction get()	{
+    public UserCommand get()	{
     	try {
     		return moveQueue.remove(); 
     	} catch (Exception err) { 
-        	return Direction.NONE; 
+        	return UserCommand.NO_COMMAND; 
         }
     }
 
@@ -54,13 +53,11 @@ public class Frogger {
 	}
 
 	public static Testing componentTest(Testing t) {
-		Frogger.unitTest(t);
 		Frog.unitTest(t);
 		Movement.unitTest(t);
-		Display.componentTest_frogMove(t);
+		Display.unitTest(t);
 		Cell.unitTest(t);
 		Car.unitTest(t);
-		ObjectGenerator.unitTest(t);
 		Timer.unitTest(t);
 		Board.unitTest(t);
 		World.unitTest(t);

@@ -12,11 +12,13 @@ public class Frog implements GameObject{
 	private boolean justBeenMoved;
 	private final int FROG_BASE_SPEED = 0;
 	private final int FROG_MOVE_SPEED = 1;
+	private boolean invincible;
 	private final GameObjectType type = GameObjectType.FROG;
 	private final boolean inheritable = false;
 
 	public Frog(int r, int c)	{
 		justBeenMoved = false;
+		invincible = false;
 		inheriting = false;
 		direction = Direction.NORTH; 
 		// frogMovement = new Movement(0,0);
@@ -44,7 +46,19 @@ public class Frog implements GameObject{
 	public void makeReady()	{
 
 	}
-	
+
+	public void setLastMoved(boolean f)	{
+
+	}
+
+	public void setInvincibility(boolean i)	{
+		invincible = i;
+	}
+
+	public boolean getInvincibility()	{
+		return invincible;
+	}
+
 	public int getRow()	{
 		return row;
 	}

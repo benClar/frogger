@@ -11,12 +11,14 @@ public class ObjectGenerator  {
 	private FrogView view;
 	private Timer timer;
 	private Direction toggle;
+	private final int HEART_BOUNDARY = 30;
+	private final int COIN_BOUNDARY = 70;
 	private final int CAR_BOUNDARY = 60;
 	private final int WATER_BOUNDARY = 30;
 	private final int EAST_DIRECTION_BOUNDARY = 50;
 	private final int UPPER_BOUND = 101;
-	private final double CREATION_INTERVAL_LOWER_BOUND = .5;
-	private final double CREATION_INTERVAL_UPPER_BOUND = 1.7;
+	private final double CREATION_INTERVAL_LOWER_BOUND = 1.5;
+	private final double CREATION_INTERVAL_UPPER_BOUND = 3;
 	private final double LOG_CREATION_LOWER = 4;
 	private final double LOG_CREATION_UPPER = 6;
 	private final double CAR_MOVEMENT_INTERVAL = .1;
@@ -66,6 +68,7 @@ public class ObjectGenerator  {
 		for(int i = view.getLowerView(); i < view.getUpperView(); i++)	{
 			if(incrementGeneration())	{
 				staticGenerate();
+				itemGenerate(view.getUpperView() - 1);
 			}
 			if(rows.get(i).ready() && rows.get(i).getType() != GameObjectType.GROUND && rows.get(i).getType() != GameObjectType.WATER)	{
 				switch(rows.get(i).getType())	{
@@ -80,6 +83,15 @@ public class ObjectGenerator  {
 				}
 				createQueue.add(rows.get(i));
 			}
+		}
+	}
+
+	public void itemGenerate(int r)	{
+		int rndm = randomGenerator.nextInt(UPPER_BOUND);
+		if(rndm <= HEART_BOUNDARY) {
+			createQueue.add(new CreateInstruction(GameObjectType.HEART,0,0,generateRandomDirection(),r,randomGenerator.nextInt(WORLD_WIDTH)));
+		} else if(rndm <= COIN_BOUNDARY) {
+			createQueue.add(new CreateInstruction(GameObjectType.COIN,0,0,generateRandomDirection(),r,randomGenerator.nextInt(WORLD_WIDTH)));
 		}
 	}
 
@@ -110,7 +122,7 @@ public class ObjectGenerator  {
 
 	public Boolean incrementGeneration()	{
 		if(getSize() < view.getUpperView())	{
-			System.out.println(view.getUpperView());
+			// System.out.println(view.getUpperView());
 			rows.add(generateObjectInstruction(view.getUpperView() - 1));
 			return true;
 		}

@@ -22,6 +22,7 @@ public class Cell {
 		return gameCell.size();
 	}
 
+
 	public Boolean objectPresent(GameObjectType go)	{
 		for (GameObject g: gameCell)	{
 			if(g.getGameObjectType() == go)	{
@@ -32,7 +33,13 @@ public class Cell {
 	}
 
 	public GameObjectType getGameObjectType(int index)	{
+		try {
 		return gameCell.get(index).getGameObjectType();
+		} catch (NullPointerException e)	{
+			return GameObjectType.NONE;
+		} catch (IndexOutOfBoundsException e)	{
+			return GameObjectType.NONE;
+		}
 	}
 
 	public int getGameObjectIndex(GameObjectType go)	{

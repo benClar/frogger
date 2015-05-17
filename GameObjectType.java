@@ -5,5 +5,9 @@ public enum GameObjectType	{
 	BLOOD(),
 	ROAD(),
 	WATER(),
-	LOG();
+	LOG(),
+	ITEM(),
+	COIN(),
+	HEART(),
+	NONE();
 }

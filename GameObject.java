@@ -7,7 +7,6 @@ public interface GameObject {
 	Direction inheritDirection();
 	boolean inheritable();
 	void setDirection(Direction d);
-	boolean inheriting();
 	void setInheritanceStatus(boolean i);
 	void addToSpeed(int speed);
 	void removeInheritanceSpeed();
